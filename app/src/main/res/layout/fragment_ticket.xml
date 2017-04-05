@@ -1,0 +1,145 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.alexis.parkmycar.TicketFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Véhicule"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.20"
+                android:textSize="20dp"/>
+
+            <Spinner
+                android:layout_weight="0.80"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/ticket_vehicule"
+                android:layout_gravity="fill_horizontal">
+            </Spinner>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Position"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/ticket_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.80"/>
+
+            <ImageButton
+                android:id="@+id/ticket_btn_location"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_my_location_black_24dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/button_shape"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <EditText
+                android:id="@+id/ticket_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Durée"
+                android:inputType="number"
+                android:layout_weight="0.30"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="minutes"
+                android:layout_weight="0.70"
+                android:textSize="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="Fin de stationnement : "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ticket_end"
+                android:text="17h35"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <EditText
+                android:id="@+id/ticket_rappel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Rappel"
+                android:inputType="number"
+                android:layout_weight="0.30"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="minutes avant"
+                android:layout_weight="0.70"
+                android:textSize="20dp"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/ticket_start"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:layout_gravity="center"
+            android:text="Démarrer"/>
+
+    </LinearLayout>
+
+</FrameLayout>
