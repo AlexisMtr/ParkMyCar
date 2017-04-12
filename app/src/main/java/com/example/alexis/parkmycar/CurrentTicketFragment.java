@@ -1,20 +1,20 @@
 package com.example.alexis.parkmycar;
 
 import android.content.Context;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.alexis.parkmycar.models.Ticket;
+import com.example.alexis.parkmycar.utils.timer.CountDown;
+import com.example.alexis.parkmycar.utils.timer.CustomTimer;
+import com.example.alexis.parkmycar.utils.timer.ITickListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 
 /**
@@ -49,6 +48,7 @@ public class CurrentTicketFragment extends Fragment
     TextView chrono;
     ImageButton stopTicket;
     Ticket current;
+    CountDown countDown;
 
     int min = 5;
 
@@ -63,6 +63,22 @@ public class CurrentTicketFragment extends Fragment
         addMin = (ImageButton) view.findViewById(R.id.addTimeTicket);
         chrono = (TextView) view.findViewById(R.id.chronoTime);
         stopTicket = (ImageButton) view.findViewById(R.id.stopTicket);
+
+        countDown = new CountDown();
+        countDown.addMinToStartTime(Ticket.getCurrent().getDuree());
+
+        countDown.setOnTickListener(new ITickListener() {
+            @Override
+            public void onTick(CustomTimer timer) {
+                updateGUI();
+            }
+        });
+        /*countDown.setDelegate(new Runnable() {
+            @Override
+            public void run() {
+                updateGUI();
+            }
+        });*/
 
 
         addMin.setOnClickListener(new View.OnClickListener()
@@ -86,9 +102,21 @@ public class CurrentTicketFragment extends Fragment
             }
         });
 
+        countDown.start();
+
+
         return view;
     }
 
+    private void updateGUI()
+    {
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chrono.setText(countDown.getTime());
+            }
+        });
+    }
 
 
 

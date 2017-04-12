@@ -1,21 +1,24 @@
 package com.example.alexis.parkmycar;
 
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.alexis.parkmycar.models.Ticket;
 import com.example.alexis.parkmycar.models.Vehicule;
+import com.example.alexis.parkmycar.utils.services.NotifyService;
+import com.example.alexis.parkmycar.utils.timer.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class HubActivity extends AppCompatActivity implements TicketFragment.OnFragmentInteractionListener,
         CarsFragment.OnFragmentInteractionListener, HistoriqueFragment.OnFragmentInteractionListener, CurrentTicketFragment.OnFragmentInteractionListener
@@ -100,5 +103,73 @@ public class HubActivity extends AppCompatActivity implements TicketFragment.OnF
             default:
                 break;
         }
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mBroadcastReceiver, new IntentFilter(NotifyService.REFRESH_TIME_INTENT));
+        if(isServiceRunning(NotifyService.class)) {
+            initButton(false);
+        }
+        else{
+            initButton(true);
+            setTimer(0, 0);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(HubActivity.this, NotifyService.class));
+        super.onDestroy();
+    }
+
+    public void updateGUI(Intent intent) {
+        if (intent.getExtras() != null) {
+            long timeInMs = intent.getLongExtra(NotifyService.KEY_EXTRA_LONG_TIME_IN_MS, 0);
+            Integer[] minSec = TimeUtil.getMinSec(timeInMs);
+            setTimer(minSec[TimeUtil.MINUTE], minSec[TimeUtil.SECOND]);
+        }
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(NotifyService.REFRESH_TIME_INTENT)) {
+                updateGUI(intent);
+            }
+        }
+    };
+
+    private long getStartedValue(){
+        return TimeUtil.toMs(0,0);
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setTimer(int hour, int minute) {
+        //timePicker.setHour(hour);
+        //timePicker.setMinute(minute);
+    }
+
+    private void initButton(boolean startEnable){
+        //stopButton.setEnabled(!startEnable);
+        //startButton.setEnabled(startEnable);
     }
 }

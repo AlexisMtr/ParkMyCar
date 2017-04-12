@@ -150,7 +150,7 @@ public class TicketFragment extends Fragment
             public void onClick(View view)
             {
                 //TODO : new Ticket and start Timer
-                Ticket.createNew(vehicule, 0, Calendar.getInstance(Locale.FRANCE).getTime(), zone.getText().toString(), 0);
+                Ticket.createNew(vehicule, Integer.parseInt(duree.getText().toString()), Calendar.getInstance(Locale.FRANCE).getTime(), zone.getText().toString(), 0);
                 callActivity("moveToChrono");
             }
         });
