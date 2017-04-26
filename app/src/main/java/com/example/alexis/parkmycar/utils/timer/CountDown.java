@@ -1,8 +1,11 @@
 package com.example.alexis.parkmycar.utils.timer;
 
+import java.util.List;
+
 public class CountDown extends CustomTimer
 {
     private long startTime = 0;
+    private IFinishListener finishListener;
 
     public CountDown() {
         super();
@@ -16,20 +19,35 @@ public class CountDown extends CustomTimer
 
     public void addHourToStartTime(long timeHour) { this.startTime += timeHour * 3600; }
 
+    public long remainingTime() { return this.startTime - getSecondeByTimeSet(); }
+
     @Override
     protected void execute()
     {
-        long currentSec = getSecondeByTimeSet();
-
-        if (startTime <= currentSec)
+        if (this.remainingTime() == 0)
+        {
+            if(this.finishListener != null)
+                finishListener.onFinish(this);
             this.stop();
+        }
     }
 
     @Override
     public String getTime()
     {
         //TODO : Heures
-        long sec = startTime - getSecondeByTimeSet();
+        long sec = this.remainingTime();
         return CustomTimer.getHour(sec) + ":" + CustomTimer.getMinute(sec) + ":" + CustomTimer.getSeconde(sec);
     }
+
+    @Override
+    public void addStepSeconde(String stepName, long seconde) throws Exception
+    {
+        if(this.stepMap.containsKey(stepName))
+            throw new Exception("Step already extist");
+
+        this.stepMap.put(stepName, this.startTime - seconde);
+    }
+
+    public void setOnFinishListener(IFinishListener listener) { this.finishListener = listener; }
 }

@@ -2,6 +2,10 @@ package com.example.alexis.parkmycar.utils.timer;
 
 import android.os.Looper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
@@ -9,14 +13,21 @@ import java.util.logging.LogRecord;
 
 public abstract class CustomTimer
 {
+    //public List<CustomTimer> timers = new ArrayList<CustomTimer>();
+
     private CustomTimer instance = null;
     private Timer timer = null;
     private boolean isStoped = true;
     private TimeChoice timeSet = TimeChoice.SECONDE;
     private long currentTime = 0;
-    private ITickListener tickListener = null;
 
-    private Runnable delegate = null;
+    protected Map<String, Long> stepMap;
+
+    private ITickListener tickListener = null;
+    private IStepListener stepListener = null;
+    private IStopListener stopListener = null;
+
+    //private Runnable delegate = null;
 
     public enum TimeChoice
     {
@@ -34,6 +45,8 @@ public abstract class CustomTimer
     protected CustomTimer()
     {
         this.instance = this;
+        //timers.add(this.instance);
+        this.stepMap = new HashMap<String, Long>();
     }
 
     /**
@@ -70,11 +83,27 @@ public abstract class CustomTimer
                 if (tickListener != null)
                     tickListener.onTick(instance);
 
-                if(delegate != null)
-                    delegate.run();
+                /*if(delegate != null)
+                    delegate.run();*/
+
+                if(stepListener != null)
+                {
+                    if(stepMap.containsValue(currentTime))
+                    {
+                        for (Map.Entry<String, Long> entry : stepMap.entrySet()) {
+                            if (currentTime == entry.getValue()) {
+                                stepListener.onStep(instance, entry.getKey());
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 if (isStoped())
                 {
+                    if(stopListener != null)
+                        stopListener.onStop(instance);
+
                     cancel();
                     //RESET ?
                 }
@@ -105,9 +134,40 @@ public abstract class CustomTimer
 
     public long getCurrentTime() { return this.currentTime; }
 
-    public void setDelegate(Runnable d) { this.delegate = d; }
+    //public void setDelegate(Runnable d) { this.delegate = d; }
 
     public void setOnTickListener(ITickListener listener) { this.tickListener = listener; }
+
+    public void setOnStepListener(IStepListener listener) { this.stepListener = listener; }
+
+    public void setOnStopListener(IStopListener listener) { this.stopListener = listener; }
+
+    public void addStepSeconde(String stepName, long seconde) throws Exception
+    {
+        if(this.stepMap.containsKey(stepName))
+            throw new Exception("Step already extist");
+
+        this.stepMap.put(stepName, seconde);
+    }
+
+    public void addStepMinute(String stepName, long minute) throws Exception
+    {
+        addStepSeconde(stepName, minute * 60);
+    }
+
+    public void addStepHour(String stepName, long hour) throws Exception
+    {
+        addStepSeconde(stepName, hour * 3600);
+    }
+
+    public void removeStep(String stepName)
+    {
+        if(!this.stepMap.containsKey(stepName))
+            return;
+
+        this.stepMap.remove(stepName);
+    }
+
 
     protected long getSecondeByTimeSet()
     {

@@ -65,8 +65,11 @@ public class Ticket
 
     public static void closeCurrent()
     {
-        Ticket.getCurrent().clos = true;
-        Ticket.add(Ticket.getCurrent());
+        if(Ticket.getCurrent() != null)
+        {
+            Ticket.getCurrent().clos = true;
+            Ticket.add(Ticket.getCurrent());
+        }
         Ticket.current = null;
     }
 

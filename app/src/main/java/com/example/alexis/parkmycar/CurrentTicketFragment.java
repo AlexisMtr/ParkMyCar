@@ -1,6 +1,7 @@
 package com.example.alexis.parkmycar;
 
 import android.content.Context;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -14,9 +15,15 @@ import android.widget.TextView;
 import com.example.alexis.parkmycar.models.Ticket;
 import com.example.alexis.parkmycar.utils.timer.CountDown;
 import com.example.alexis.parkmycar.utils.timer.CustomTimer;
+import com.example.alexis.parkmycar.utils.timer.IFinishListener;
+import com.example.alexis.parkmycar.utils.timer.IStopListener;
 import com.example.alexis.parkmycar.utils.timer.ITickListener;
+import com.example.alexis.parkmycar.utils.timer.TimeUtil;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,6 +43,15 @@ public class CurrentTicketFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
+    private static CurrentTicketFragment instance;
+
+    public static CurrentTicketFragment getInstance()
+    {
+        if(instance == null)
+            instance = CurrentTicketFragment.newInstance("","");
+        return instance;
+    }
+
     public CurrentTicketFragment() {
         // Required empty public constructor
     }
@@ -46,11 +62,17 @@ public class CurrentTicketFragment extends Fragment
     ImageButton removeMin;
     ImageButton addMin;
     TextView chrono;
+    TextView timeTotal;
+    TextView tarif;
+    TextView tarifTot;
     ImageButton stopTicket;
-    Ticket current;
+    ImageButton cancelTicket;
     CountDown countDown;
+    ITickListener tickListener;
+    IStopListener stopListener;
+    IFinishListener finishListener;
 
-    int min = 5;
+    double tarif_h = 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,23 +84,19 @@ public class CurrentTicketFragment extends Fragment
         removeMin = (ImageButton) view.findViewById(R.id.removeTimeTicket);
         addMin = (ImageButton) view.findViewById(R.id.addTimeTicket);
         chrono = (TextView) view.findViewById(R.id.chronoTime);
+        timeTotal = (TextView) view.findViewById(R.id.time_tot);
         stopTicket = (ImageButton) view.findViewById(R.id.stopTicket);
+        cancelTicket = (ImageButton) view.findViewById(R.id.cancelTicket);
+        tarif = (TextView) view.findViewById(R.id.tarif);
+        tarifTot = (TextView) view.findViewById(R.id.tarif_tot);
 
-        countDown = new CountDown();
-        countDown.addMinToStartTime(Ticket.getCurrent().getDuree());
+        timeTotal.setText(TimeUtil.toHoursMin(Ticket.getCurrent().getDuree()));
+        chrono.setText(countDown.getTime());
 
-        countDown.setOnTickListener(new ITickListener() {
-            @Override
-            public void onTick(CustomTimer timer) {
-                updateGUI();
-            }
-        });
-        /*countDown.setDelegate(new Runnable() {
-            @Override
-            public void run() {
-                updateGUI();
-            }
-        });*/
+        double tarif_total = (Ticket.getCurrent().getDuree() * 60) * ((tarif_h/60)/60);
+        DecimalFormat df = new DecimalFormat("#.##");
+        tarifTot.setText(df.format(tarif_total) + " €");
+
 
 
         addMin.setOnClickListener(new View.OnClickListener()
@@ -86,23 +104,49 @@ public class CurrentTicketFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                min = Integer.parseInt(minToAdd.getText().toString());
-                DateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.FRANCE);
-                Calendar c = Calendar.getInstance(Locale.FRANCE);
-                try {
-                    Date time = sdf.parse(chrono.getText().toString());
-                    c.setTime(time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                int min = Integer.parseInt(minToAdd.getText().toString());
+                countDown.addMinToStartTime(min);
+                Ticket.addTime(min);
+                double tarif_total = (Ticket.getCurrent().getDuree() * 60) * ((tarif_h/60)/60);
+                DecimalFormat df = new DecimalFormat("#.##");
+                tarifTot.setText(df.format(tarif_total) + " €");
+                timeTotal.setText(TimeUtil.toHoursMin(Ticket.getCurrent().getDuree()));
 
-                c.add(Calendar.MINUTE, min);
-
-                chrono.setText(sdf.format(c.getTime()));
+                chrono.setText(countDown.getTime());
             }
         });
 
-        countDown.start();
+        removeMin.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                int min = -Integer.parseInt(minToAdd.getText().toString());
+                countDown.addMinToStartTime(min);
+                Ticket.addTime(min);
+                double tarif_total = (Ticket.getCurrent().getDuree() * 60) * ((tarif_h/60)/60);
+                DecimalFormat df = new DecimalFormat("#.##");
+                tarifTot.setText(df.format(tarif_total) + " €");
+                timeTotal.setText(TimeUtil.toHoursMin(Ticket.getCurrent().getDuree()));
+
+                chrono.setText(countDown.getTime());
+            }
+        });
+
+        cancelTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countDown.stop();
+            }
+        });
+
+        stopTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countDown.stop();
+            }
+        });
+
 
 
         return view;
@@ -110,10 +154,20 @@ public class CurrentTicketFragment extends Fragment
 
     private void updateGUI()
     {
+        if(this.getActivity() == null)
+            return;
+
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run() {
+            public void run()
+            {
+                double _tarif = ((Ticket.getCurrent().getDuree() * 60) - countDown.remainingTime()) * ((tarif_h/60)/60);
+                DecimalFormat df = new DecimalFormat("#.##");
+                tarif.setText(df.format(_tarif) + " €");
                 chrono.setText(countDown.getTime());
+
+                if(countDown.remainingTime() < ((Ticket.getCurrent().getDuree() * 60) - 10))
+                    cancelTicket.setEnabled(false);
             }
         });
     }
@@ -167,12 +221,53 @@ public class CurrentTicketFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        tickListener = new ITickListener() {
+            @Override
+            public void onTick(CustomTimer timer) {
+                updateGUI();
+            }
+        };
+
+        stopListener = new IStopListener() {
+            @Override
+            public void onStop(CustomTimer timer) {
+                //Ticket.closeCurrent();
+                callActivity("moveToChrono");
+            }
+        };
+
+        finishListener = new IFinishListener() {
+            @Override
+            public void onFinish(CustomTimer timer) {
+                Ticket.closeCurrent();
+                callActivity("moveToChrono");
+            }
+        };
+
+
+        this.countDown = ((HubActivity)this.getActivity()).getCountDown();
+        try {
+            //this.countDown.addStepSeconde("disableCancel", (Ticket.getCurrent().getDuree() * 60) - 10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.countDown.setOnTickListener(tickListener);
+        this.countDown.setOnStopListener(stopListener);
+        this.countDown.setOnFinishListener(finishListener);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        tickListener = null;
+        stopListener = null;
+        finishListener = null;
+        this.countDown.setOnTickListener(tickListener);
+        this.countDown.setOnStopListener(stopListener);
+        this.countDown.setOnFinishListener(finishListener);
+        //this.countDown.removeStep("disableCancel");
     }
 
     /**

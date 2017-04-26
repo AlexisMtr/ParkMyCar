@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.widget.ViewDragHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import com.example.alexis.parkmycar.models.Ticket;
 import com.example.alexis.parkmycar.models.Vehicule;
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
 import com.example.alexis.parkmycar.models.adapter.VehiculeSpinnerAdapter;
+import com.example.alexis.parkmycar.utils.timer.CountDown;
+import com.example.alexis.parkmycar.utils.timer.CustomTimer;
+import com.example.alexis.parkmycar.utils.timer.IStepListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,6 +47,15 @@ public class TicketFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
+    private static TicketFragment instance;
+
+    public static TicketFragment getInstance()
+    {
+        if(instance == null)
+            instance = TicketFragment.newInstance("","");
+        return instance;
+    }
+
     public TicketFragment() {
         // Required empty public constructor
     }
@@ -56,6 +69,7 @@ public class TicketFragment extends Fragment
     ImageButton findZone;
     Spinner vehicules;
     Vehicule vehicule;
+    CountDown countDown;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -71,6 +85,8 @@ public class TicketFragment extends Fragment
         findZone = (ImageButton) view.findViewById(R.id.ticket_btn_location);
         start = (Button) view.findViewById(R.id.ticket_start);
         vehicules = (Spinner) view.findViewById(R.id.ticket_vehicule);
+
+        this.countDown = ((HubActivity)this.getActivity()).getCountDown();
 
         vehicules.setAdapter(new VehiculeSpinnerAdapter(getContext(), R.layout.cars_spinner_item, Vehicule.getVehicules()));
 
@@ -150,7 +166,17 @@ public class TicketFragment extends Fragment
             public void onClick(View view)
             {
                 //TODO : new Ticket and start Timer
-                Ticket.createNew(vehicule, Integer.parseInt(duree.getText().toString()), Calendar.getInstance(Locale.FRANCE).getTime(), zone.getText().toString(), 0);
+                Ticket.createNew(vehicule, Integer.parseInt(duree.getText().toString()), Calendar.getInstance(Locale.FRANCE).getTime(), zone.getText().toString(), Integer.parseInt(rappel.getText().toString()));
+                countDown.addMinToStartTime(Ticket.getCurrent().getDuree());
+
+                try
+                {
+                    countDown.addStepSeconde("rappel", Ticket.getCurrent().getRappel());
+                }
+                catch (Exception e)
+                { Log.i("ERR", e.getMessage());
+                }
+                countDown.start(false);
                 callActivity("moveToChrono");
             }
         });

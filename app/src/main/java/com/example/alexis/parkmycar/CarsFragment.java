@@ -28,6 +28,15 @@ public class CarsFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
+    private static CarsFragment instance;
+
+    public static CarsFragment getInstance()
+    {
+        if(instance == null)
+            instance = CarsFragment.newInstance("","");
+        return instance;
+    }
+
     public CarsFragment() {
         // Required empty public constructor
     }

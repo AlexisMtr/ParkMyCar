@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="red">#FF0000</color>
+    <color name="red">#f55944</color>
     <color name="droid">#B1DA5A</color>
     <color name="blue">#4ECDC4</color>
 </resources>

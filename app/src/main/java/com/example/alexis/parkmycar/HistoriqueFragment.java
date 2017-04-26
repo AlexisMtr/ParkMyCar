@@ -25,6 +25,15 @@ public class HistoriqueFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
+    private static HistoriqueFragment instance;
+
+    public static HistoriqueFragment getInstance()
+    {
+        if(instance == null)
+            instance = HistoriqueFragment.newInstance("","");
+        return instance;
+    }
+
     public HistoriqueFragment() {
         // Required empty public constructor
     }

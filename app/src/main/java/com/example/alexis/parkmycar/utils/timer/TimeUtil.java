@@ -19,4 +19,14 @@ public class TimeUtil
     public static long toMs(int minute, int seconde){
         return (minute * 60 + seconde) * 1000;
     }
+
+    public static String toHoursMin(int minutes)
+    {
+        String hours = minutes/60 + "";
+        hours = hours.length() == 2 ? hours : "0" + hours;
+        String min = minutes%60 + "";
+        min = min.length() == 2 ? min : "0" + min;
+
+        return hours + ":" + min + ":00";
+    }
 }
