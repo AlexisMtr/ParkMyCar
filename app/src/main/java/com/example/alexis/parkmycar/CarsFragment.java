@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
 import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
 import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
+import com.example.alexis.parkmycar.models.metier.Usager;
+import com.example.alexis.parkmycar.models.metier.Voiture;
 import com.example.alexis.parkmycar.utils.utils;
 
 import java.util.ArrayList;
@@ -141,7 +143,8 @@ public class CarsFragment extends Fragment
                 add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        CtrlVoiture.addVoiture(marque.getText().toString(),
+
+                        new Voiture(marque.getText().toString(),
                                 model.getText().toString(),
                                 immat.getText().toString(),
                                 id.getText().toString(),

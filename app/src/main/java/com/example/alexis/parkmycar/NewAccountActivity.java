@@ -53,7 +53,7 @@ public class NewAccountActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                CtrlUsager.addUsager(nom.getText().toString(),
+                new Usager(nom.getText().toString(),
                         prenom.getText().toString(),
                         tel.getText().toString(),
                         mail.getText().toString(),
