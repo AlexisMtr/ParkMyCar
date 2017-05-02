@@ -17,13 +17,18 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.alexis.parkmycar.models.Ticket;
-import com.example.alexis.parkmycar.models.Vehicule;
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
 import com.example.alexis.parkmycar.models.adapter.VehiculeSpinnerAdapter;
+import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
+import com.example.alexis.parkmycar.models.controlleur.CtrlUsager;
+import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
+import com.example.alexis.parkmycar.models.controlleur.CtrlZone;
+import com.example.alexis.parkmycar.models.metier.Voiture;
+import com.example.alexis.parkmycar.models.metier.Zone;
 import com.example.alexis.parkmycar.utils.timer.CountDown;
 import com.example.alexis.parkmycar.utils.timer.CustomTimer;
 import com.example.alexis.parkmycar.utils.timer.IStepListener;
+import com.example.alexis.parkmycar.utils.utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -68,7 +73,7 @@ public class TicketFragment extends Fragment
     Button start;
     ImageButton findZone;
     Spinner vehicules;
-    Vehicule vehicule;
+    Voiture vehicule;
     CountDown countDown;
 
     @Override
@@ -88,7 +93,7 @@ public class TicketFragment extends Fragment
 
         this.countDown = ((HubActivity)this.getActivity()).getCountDown();
 
-        vehicules.setAdapter(new VehiculeSpinnerAdapter(getContext(), R.layout.cars_spinner_item, Vehicule.getVehicules()));
+        vehicules.setAdapter(new VehiculeSpinnerAdapter(getContext(), R.layout.cars_spinner_item, CtrlVoiture.getVoituresByUsager(utils.getUsager())));
 
 
         endTime.setText(this.getEndTime());
@@ -99,7 +104,7 @@ public class TicketFragment extends Fragment
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                vehicule = Vehicule.get(i);
+                vehicule = CtrlVoiture.getVoitures().get(i);
                 setStartVisibility();
             }
 
@@ -148,35 +153,39 @@ public class TicketFragment extends Fragment
             }
         });
 
-        rappel.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        /*rappel.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean focused)
             {
                 if(!focused)
                 {
-                    //TODO : créer un rappel
                 }
             }
-        });
+        });/*/
 
         start.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                //TODO : new Ticket and start Timer
-                Ticket.createNew(vehicule, Integer.parseInt(duree.getText().toString()), Calendar.getInstance(Locale.FRANCE).getTime(), zone.getText().toString(), Integer.parseInt(rappel.getText().toString()));
-                countDown.addMinToStartTime(Ticket.getCurrent().getDuree());
+
+                Calendar c = Calendar.getInstance(Locale.FRANCE);
+                SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD H:mm:ss", Locale.FRANCE);
+                CtrlTicket.addTicket(df.format(c.getTime()), "", vehicule, zone.getText().toString(), CtrlZone.getZoneById(1));
+                CtrlTicket.getCurrent().setDuree(Integer.parseInt(duree.getText().toString()));
+                CtrlTicket.getCurrent().setRappel(Integer.parseInt(rappel.getText().toString()));
+                countDown.setStartTime(CtrlTicket.getCurrent().getDuree() * 60);
 
                 try
                 {
-                    countDown.addStepSeconde("rappel", Ticket.getCurrent().getRappel());
+                    countDown.addStepSeconde("rappel", CtrlTicket.getCurrent().getRappel() * 60);
                 }
                 catch (Exception e)
-                { Log.i("ERR", e.getMessage());
+                {
+                    Log.i("ERR", e.getMessage());
                 }
-                countDown.start(false);
+                countDown.start(true);
                 callActivity("moveToChrono");
             }
         });

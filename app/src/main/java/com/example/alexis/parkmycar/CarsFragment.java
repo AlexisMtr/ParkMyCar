@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.alexis.parkmycar.models.Vehicule;
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
+import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
+import com.example.alexis.parkmycar.utils.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class CarsFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_cars, container, false);
         ListView vehiculeList = (ListView) view.findViewById(R.id.carsList);
-        VehiculeListAdapter adapter = new VehiculeListAdapter(getContext(), R.layout.cars_list_item, Vehicule.getVehicules());
+        VehiculeListAdapter adapter = new VehiculeListAdapter(getContext(), R.layout.cars_list_item, CtrlVoiture.getVoituresByUsager(utils.getUsager()));
         vehiculeList.setAdapter(adapter);
 
 

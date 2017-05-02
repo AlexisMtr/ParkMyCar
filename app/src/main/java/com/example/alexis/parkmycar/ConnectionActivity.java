@@ -1,5 +1,6 @@
 package com.example.alexis.parkmycar;
 
+import android.Manifest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
+import com.example.alexis.parkmycar.models.controlleur.CtrlUsager;
+import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
+import com.example.alexis.parkmycar.models.controlleur.CtrlZone;
+import com.example.alexis.parkmycar.utils.permissions.PermissionUtil;
 
 public class ConnectionActivity extends AppCompatActivity
 {
@@ -24,6 +31,10 @@ public class ConnectionActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
+
+        PermissionUtil.checkPermissions(ConnectionActivity.this, 5, Manifest.permission.INTERNET);
+
+        CtrlUsager.requestUsagers();
 
         logInBtn = (Button) findViewById(R.id.connexion);
         login = (EditText) findViewById(R.id.login);

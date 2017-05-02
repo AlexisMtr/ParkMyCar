@@ -27,7 +27,7 @@
                 android:textAlignment="center"
                 android:text="00:00:00"/>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
@@ -42,7 +42,7 @@
                 android:id="@+id/time_tot"
                 android:textSize="20dp"
                 android:textAlignment="center"
-                android:text="00:00:00"/>
+                android:text="00:00:00"/>-->
         </LinearLayout>
 
         <LinearLayout
@@ -56,10 +56,11 @@
                     android:layout_height="40dp"
                     android:id="@+id/removeTimeTicket"
                     android:textSize="30dp"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/button_shape"
                     android:src="@drawable/ic_remove_black_24dp"/>
 
-                <EditText
+                <!--<EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/timeToAdd"
@@ -67,11 +68,23 @@
                     android:text="10"
                     android:maxLength="3"
                     android:layout_marginLeft="25dp"
-                    android:inputType="number"/>
+                    android:inputType="number"/>-->
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:id="@+id/timeToAdd"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="25dp"
+                    android:alwaysDrawnWithCache="true"
+                    android:clickable="true">
+
+                </NumberPicker>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"
                     android:layout_marginRight="25dp"
                     android:text="minutes"/>
@@ -82,6 +95,7 @@
                     android:textSize="30dp"
                     android:id="@+id/addTimeTicket"
                     android:background="@drawable/button_shape"
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_add_black_24dp"/>
 
         </LinearLayout>
@@ -115,44 +129,15 @@
 
         </LinearLayout>
 
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:textSize="18dp"
-            android:text="Prix du stationnement"/>
+            android:text="Prix du stationnement"/>-->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/tarif"
-                android:textSize="20dp"
-                android:text="0 €"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
-                android:textSize="18dp"
-                android:text="/"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/tarif_tot"
-                android:textSize="18dp"
-                android:text="0 €"/>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -183,18 +168,20 @@
                 android:layout_gravity="center_horizontal">
 
                 <TextView
+                    android:id="@+id/curVehName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textSize="14dp"
-                    android:text="Citroen DS"/>
+                    android:text=""/>
 
                 <TextView
+                    android:id="@+id/curVehImmat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textSize="14dp"
-                    android:text="BQ-790-KS"/>
+                    android:text=""/>
             </LinearLayout>
 
         </LinearLayout>
@@ -212,19 +199,51 @@
             android:layout_weight="0.45"
             android:orientation="vertical">
 
-            <TextView
+            <!--<TextView
+                android:id="@+id/curZoneName1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="14dp"
-                android:text="Parking de la Gare"/>
+                android:text=""/>-->
 
             <TextView
+                android:id="@+id/curZoneName2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="14dp"
-                android:text="38200 Vienne"/>
+                android:text=""/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/tarif"
+                    android:textSize="20dp"
+                    android:text="0 €"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="18dp"
+                    android:text="/"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/tarif_tot"
+                    android:textSize="18dp"
+                    android:text="0 €"/>
+            </LinearLayout>
 
         </LinearLayout>
 

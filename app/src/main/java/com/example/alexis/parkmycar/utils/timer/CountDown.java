@@ -24,7 +24,7 @@ public class CountDown extends CustomTimer
     @Override
     protected void execute()
     {
-        if (this.remainingTime() == 0)
+        if (this.remainingTime() <= 0)
         {
             if(this.finishListener != null)
                 finishListener.onFinish(this);

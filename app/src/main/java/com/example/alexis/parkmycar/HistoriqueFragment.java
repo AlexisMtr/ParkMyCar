@@ -9,8 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.alexis.parkmycar.models.Ticket;
+import com.example.alexis.parkmycar.models.metier.Ticket;
 import com.example.alexis.parkmycar.models.adapter.TicketListAdapter;
+import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
+import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
+import com.example.alexis.parkmycar.models.metier.Voiture;
+import com.example.alexis.parkmycar.utils.utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -47,8 +54,15 @@ public class HistoriqueFragment extends Fragment
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_historique, container, false);
 
+        List<Voiture> voitures = CtrlVoiture.getVoituresByUsager(utils.getUsager());
+        List<Ticket> all = new ArrayList<Ticket>();
+
+        for(Voiture v : voitures)
+            all.addAll(CtrlTicket.getTicketsByVoiture(v));
+
+
         tickets = (ListView) view.findViewById(R.id.ticketsListHisto);
-        tickets.setAdapter(new TicketListAdapter(getContext(), R.layout.tickets_list_item, Ticket.getTickets()));
+        tickets.setAdapter(new TicketListAdapter(getContext(), R.layout.tickets_list_item, all));
 
         return view;
     }

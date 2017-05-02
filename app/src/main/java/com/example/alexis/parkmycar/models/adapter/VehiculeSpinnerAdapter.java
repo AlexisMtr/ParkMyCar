@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.alexis.parkmycar.R;
-import com.example.alexis.parkmycar.models.Vehicule;
+import com.example.alexis.parkmycar.models.metier.Voiture;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class VehiculeSpinnerAdapter extends ArrayAdapter
 {
     Context context;
     int layoutResourceId;
-    List<Vehicule> vehicules;
+    List<Voiture> vehicules;
 
-    public VehiculeSpinnerAdapter(Context context, int layoutRessourceId, List<Vehicule> data)
+    public VehiculeSpinnerAdapter(Context context, int layoutRessourceId, List<Voiture> data)
     {
         super(context, layoutRessourceId, data);
         this.context = context;
@@ -45,10 +45,10 @@ public class VehiculeSpinnerAdapter extends ArrayAdapter
         TextView immat = (TextView) row.findViewById(R.id.veh_immat);
         TextView marque_model = (TextView) row.findViewById(R.id.veh_marque_model);
 
-        Vehicule v = this.vehicules.get(position);
+        Voiture v = this.vehicules.get(position);
         img.setImageResource(R.drawable.ic_trash);
-        immat.setText(v.getImmat());
-        marque_model.setText(v.getMarque() + " - " + v.getModel());
+        immat.setText(v.getImmatriculation());
+        marque_model.setText(v.getMarque() + " - " + v.getModele());
 
         return row;
     }

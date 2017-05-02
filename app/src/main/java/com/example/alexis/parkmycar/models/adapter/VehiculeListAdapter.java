@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexis.parkmycar.R;
-import com.example.alexis.parkmycar.models.Vehicule;
+import com.example.alexis.parkmycar.models.metier.Voiture;
 import com.example.alexis.parkmycar.utils.SwipeButtonClickListener;
 import com.example.alexis.parkmycar.utils.SwipeDetector;
 
@@ -24,9 +24,9 @@ public class VehiculeListAdapter extends ArrayAdapter
 {
     Context context;
     int layoutResourceId;
-    List<Vehicule> vehicules;
+    List<Voiture> vehicules;
 
-    public VehiculeListAdapter(Context context, int layoutRessourceId, List<Vehicule> data)
+    public VehiculeListAdapter(Context context, int layoutRessourceId, List<Voiture> data)
     {
         super(context, layoutRessourceId, data);
         this.context = context;
@@ -54,10 +54,10 @@ public class VehiculeListAdapter extends ArrayAdapter
         LinearLayout rightLayout = (LinearLayout) row.findViewById(R.id.itemTrashRight);
         LinearLayout mainLayout = (LinearLayout) row.findViewById(R.id.itemContent);
 
-        Vehicule v = this.vehicules.get(position);
+        Voiture v = this.vehicules.get(position);
         img.setImageResource(R.drawable.ic_trash);
-        immat.setText(v.getImmat());
-        marque_model.setText(v.getMarque() + " - " + v.getModel());
+        immat.setText(v.getImmatriculation());
+        marque_model.setText(v.getMarque() + " - " + v.getModele());
 
         SwipeDetector detector = new SwipeDetector(row, leftLayout, null, mainLayout);
         row.setOnTouchListener(detector);
@@ -83,7 +83,6 @@ public class VehiculeListAdapter extends ArrayAdapter
     public void remove(@Nullable Object object) {
         super.remove(object);
         this.vehicules.remove((int)object);
-        //Vehicule.remove((int)object);
         this.notifyDataSetChanged();
     }
 }

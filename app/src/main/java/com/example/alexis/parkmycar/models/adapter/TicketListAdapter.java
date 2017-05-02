@@ -14,11 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexis.parkmycar.R;
-import com.example.alexis.parkmycar.models.Ticket;
-import com.example.alexis.parkmycar.models.Vehicule;
+import com.example.alexis.parkmycar.models.metier.Ticket;
 import com.example.alexis.parkmycar.utils.SwipeButtonClickListener;
 import com.example.alexis.parkmycar.utils.SwipeDetector;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -61,12 +61,20 @@ public class TicketListAdapter extends ArrayAdapter
 
         Calendar cal = Calendar.getInstance(Locale.FRANCE);
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/Y, HH:mm", Locale.FRANCE);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Ticket t = this.tickets.get(position);
         img.setImageResource(R.drawable.ic_history_black_24px);
-        date.setText(df.format(t.getDate()));
-        emplacement.setText(t.getEmplacement());
-        duree.setText(String.valueOf(t.getDuree()));
+        try {
+            System.out.println(t.getDateDebut());
+            System.out.println(sdf.parse(t.getDateDebut()));
+            System.out.println(df.format(sdf.parse(t.getDateDebut())));
+            date.setText(df.format(sdf.parse(t.getDateDebut())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        emplacement.setText(t.getZone().getNom());
+        duree.setText(String.valueOf(t.getDureePayanteMinute()));
 
         SwipeDetector detector = new SwipeDetector(row, leftLayout, null, mainLayout);
         row.setOnTouchListener(detector);
