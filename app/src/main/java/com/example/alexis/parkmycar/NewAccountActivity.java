@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.alexis.parkmycar.models.controlleur.CtrlUsager;
+import com.example.alexis.parkmycar.models.metier.Usager;
+
 public class NewAccountActivity extends AppCompatActivity
 {
 
@@ -50,6 +53,11 @@ public class NewAccountActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                CtrlUsager.addUsager(nom.getText().toString(),
+                        prenom.getText().toString(),
+                        tel.getText().toString(),
+                        mail.getText().toString(),
+                        password.getText().toString());
                 finish();
             }
         });

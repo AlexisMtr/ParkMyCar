@@ -13,21 +13,22 @@ import android.widget.TextView;
 
 import com.example.alexis.parkmycar.R;
 import com.example.alexis.parkmycar.models.metier.Voiture;
+import com.example.alexis.parkmycar.models.metier.Zone;
 
 import java.util.List;
 
-public class VehiculeSpinnerAdapter extends ArrayAdapter
+public class ZoneSpinnerAdapter extends ArrayAdapter
 {
     Context context;
     int layoutResourceId;
-    List<Voiture> vehicules;
+    List<Zone> zones;
 
-    public VehiculeSpinnerAdapter(Context context, int layoutRessourceId, List<Voiture> data)
+    public ZoneSpinnerAdapter(Context context, int layoutRessourceId, List<Zone> data)
     {
         super(context, layoutRessourceId, data);
         this.context = context;
         this.layoutResourceId = layoutRessourceId;
-        this.vehicules = data;
+        this.zones = data;
     }
 
     @NonNull
@@ -41,13 +42,11 @@ public class VehiculeSpinnerAdapter extends ArrayAdapter
             row = inflater.inflate(layoutResourceId, parent, false);
         }
 
-        ImageView img = (ImageView) row.findViewById(R.id.veh_img);
-        TextView immat = (TextView) row.findViewById(R.id.veh_immat);
-        TextView marque_model = (TextView) row.findViewById(R.id.veh_marque_model);
+        ImageView img = (ImageView) row.findViewById(R.id.zone_img);
+        TextView immat = (TextView) row.findViewById(R.id.zone_nom);
 
-        Voiture v = this.vehicules.get(position);
-        immat.setText(v.getImmatriculation());
-        marque_model.setText(v.getMarque() + " - " + v.getModele());
+        Zone z = this.zones.get(position);
+        immat.setText(z.getNom());
 
         return row;
     }

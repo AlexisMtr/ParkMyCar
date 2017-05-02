@@ -60,4 +60,9 @@ public class CtrlVoiture {
 	}
 	
 	public static List<Voiture> getVoitures() { return Voiture.getListeVoitures(); }
+
+	public static void addVoiture(String marque, String model, String immat, String id, String mail)
+	{
+		CtrlVoiture.getVoitures().add(new Voiture(marque, model, immat, id, mail));
+	}
 }

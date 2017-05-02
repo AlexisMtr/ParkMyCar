@@ -1,15 +1,22 @@
 package com.example.alexis.parkmycar;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
+import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
 import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
 import com.example.alexis.parkmycar.utils.utils;
 
@@ -69,6 +76,8 @@ public class CarsFragment extends Fragment
         }
     }
 
+    FloatingActionButton addBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +89,71 @@ public class CarsFragment extends Fragment
         ListView vehiculeList = (ListView) view.findViewById(R.id.carsList);
         VehiculeListAdapter adapter = new VehiculeListAdapter(getContext(), R.layout.cars_list_item, CtrlVoiture.getVoituresByUsager(utils.getUsager()));
         vehiculeList.setAdapter(adapter);
+
+        addBtn = (FloatingActionButton) view.findViewById(R.id.addCarBtn);
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Dialog dialog = new Dialog(CarsFragment.this.getContext());
+                dialog.setContentView(CarsFragment.this.getActivity().getLayoutInflater().inflate(R.layout.dial_new_vehicule, null));
+
+                final EditText marque = (EditText) dialog.findViewById(R.id.newMarque);
+                final EditText model = (EditText) dialog.findViewById(R.id.newModel);
+                final EditText immat = (EditText) dialog.findViewById(R.id.newImmat);
+                final TextView id = (TextView) dialog.findViewById(R.id.idveh);
+                Button add = (Button) dialog.findViewById(R.id.addCar);
+
+                marque.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getAction() == KeyEvent.ACTION_UP)
+                        {
+                            id.setText(marque.getText().toString() + "-" + model.getText().toString() + "-" + immat.getText().toString());
+                        }
+                        return false;
+                    }
+                });
+
+                model.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getAction() == KeyEvent.ACTION_UP)
+                        {
+                            id.setText(marque.getText().toString() + "-" + model.getText().toString() + "-" + immat.getText().toString());
+                        }
+                        return false;
+                    }
+                });
+
+                immat.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getAction() == KeyEvent.ACTION_UP)
+                        {
+                            id.setText(marque.getText().toString() + "-" + model.getText().toString() + "-" + immat.getText().toString());
+                        }
+                        return false;
+                    }
+                });
+
+                add.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CtrlVoiture.addVoiture(marque.getText().toString(),
+                                model.getText().toString(),
+                                immat.getText().toString(),
+                                id.getText().toString(),
+                                utils.getUsager().getMail());
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+            }
+        });
 
 
 

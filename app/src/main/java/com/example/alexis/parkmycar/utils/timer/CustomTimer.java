@@ -20,6 +20,7 @@ public abstract class CustomTimer
     private boolean isStoped = true;
     private TimeChoice timeSet = TimeChoice.SECONDE;
     private long currentTime = 0;
+    private boolean triggerStopEvent = true;
 
     protected Map<String, Long> stepMap;
 
@@ -101,7 +102,7 @@ public abstract class CustomTimer
 
                 if (isStoped())
                 {
-                    if(stopListener != null)
+                    if(stopListener != null && triggerStopEvent == true)
                         stopListener.onStop(instance);
 
                     cancel();
@@ -115,7 +116,13 @@ public abstract class CustomTimer
     /**
      * Permet de stoper le timer
      */
-    public void stop() { this.isStoped = true; }
+    public void stop() { this.stop(true); }
+
+    public void stop(boolean triggerStopEvent)
+    {
+        this.isStoped = true;
+        this.triggerStopEvent = triggerStopEvent;
+    }
 
     /**
      * Permet d'executer la t�che de l'objet
@@ -129,6 +136,7 @@ public abstract class CustomTimer
     protected Timer getTimer() { return this.timer; }
 
     public boolean isStoped() { return this.isStoped; }
+
 
     public void setTimeSet(TimeChoice timeSet) { this.timeSet = timeSet; }
 

@@ -55,7 +55,7 @@ public class VehiculeListAdapter extends ArrayAdapter
         LinearLayout mainLayout = (LinearLayout) row.findViewById(R.id.itemContent);
 
         Voiture v = this.vehicules.get(position);
-        img.setImageResource(R.drawable.ic_trash);
+        img.setImageResource(R.drawable.ic_directions_car_black_24dp);
         immat.setText(v.getImmatriculation());
         marque_model.setText(v.getMarque() + " - " + v.getModele());
 

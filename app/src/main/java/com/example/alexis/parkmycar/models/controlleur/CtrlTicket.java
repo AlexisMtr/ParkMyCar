@@ -5,6 +5,7 @@ import com.example.alexis.parkmycar.models.metier.EtatTicket;
 import com.example.alexis.parkmycar.models.metier.Ticket;
 import com.example.alexis.parkmycar.models.metier.Voiture;
 import com.example.alexis.parkmycar.models.metier.Zone;
+import com.example.alexis.parkmycar.utils.utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +21,12 @@ public class CtrlTicket {
 
 	public static void requestTickets()
 	{
-		ApiConnectionService api = new ApiConnectionService();
+		ApiConnectionService api = new ApiConnectionService() {
+			@Override
+			protected void onPostExecute(Void aVoid) {
+				utils.finishImport = true;
+			}
+		};
 		api.execute(Ticket.URL);
 	}
 	
@@ -89,11 +95,21 @@ public class CtrlTicket {
 		CtrlTicket.getTickets().remove(CtrlTicket.getCurrent());
 	}
 
-	public static void finishTicket()
+	public static void finishTicket(int dureeEffectiveSeconde)
 	{
 		Calendar c = Calendar.getInstance(Locale.FRANCE);
-		SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD H:mm:ss", Locale.FRANCE);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss", Locale.FRANCE);
 		CtrlTicket.getCurrent().setDateFin(df.format(c.getTime()));
+		CtrlTicket.getCurrent().setDureePayanteMinute((dureeEffectiveSeconde * 60));
+
+		// a la fin obligatoirement
 		CtrlTicket.getCurrent().setEtat(EtatTicket.TERMINE);
+	}
+
+	public static double calculPrix(long duree)
+	{
+		double tarif = CtrlTicket.getCurrent().getZone().getTarif();
+
+		return duree * (tarif/3600);
 	}
 }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.alexis.parkmycar.models.adapter.VehiculeListAdapter;
 import com.example.alexis.parkmycar.models.adapter.VehiculeSpinnerAdapter;
+import com.example.alexis.parkmycar.models.adapter.ZoneSpinnerAdapter;
 import com.example.alexis.parkmycar.models.controlleur.CtrlTicket;
 import com.example.alexis.parkmycar.models.controlleur.CtrlUsager;
 import com.example.alexis.parkmycar.models.controlleur.CtrlVoiture;
@@ -38,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.Exchanger;
 
 
 /**
@@ -68,12 +70,14 @@ public class TicketFragment extends Fragment
     View view;
     EditText duree;
     TextView endTime;
-    EditText zone;
+    //EditText zone;
+    Spinner zones;
     EditText rappel;
     Button start;
     ImageButton findZone;
     Spinner vehicules;
     Voiture vehicule;
+    Zone zone;
     CountDown countDown;
 
     @Override
@@ -86,7 +90,8 @@ public class TicketFragment extends Fragment
         duree = (EditText) view.findViewById(R.id.ticket_duration);
         endTime = (TextView) view.findViewById(R.id.ticket_end);
         rappel = (EditText) view.findViewById(R.id.ticket_rappel);
-        zone = (EditText) view.findViewById(R.id.ticket_location);
+        //zone = (EditText) view.findViewById(R.id.ticket_location);
+        zones = (Spinner) view.findViewById(R.id.ticket_location);
         findZone = (ImageButton) view.findViewById(R.id.ticket_btn_location);
         start = (Button) view.findViewById(R.id.ticket_start);
         vehicules = (Spinner) view.findViewById(R.id.ticket_vehicule);
@@ -94,6 +99,7 @@ public class TicketFragment extends Fragment
         this.countDown = ((HubActivity)this.getActivity()).getCountDown();
 
         vehicules.setAdapter(new VehiculeSpinnerAdapter(getContext(), R.layout.cars_spinner_item, CtrlVoiture.getVoituresByUsager(utils.getUsager())));
+        zones.setAdapter(new ZoneSpinnerAdapter(getContext(), R.layout.zone_spinner_items, CtrlZone.getZones()));
 
 
         endTime.setText(this.getEndTime());
@@ -116,7 +122,7 @@ public class TicketFragment extends Fragment
             }
         });
 
-        zone.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        /*zone.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean focused)
@@ -127,6 +133,20 @@ public class TicketFragment extends Fragment
                     setStartVisibility();
                 }
             }
+        });*/
+
+        zones.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                zone = CtrlZone.getZones().get(i);
+                setStartVisibility();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                zone = null;
+                setStartVisibility();
+            }
         });
 
         findZone.setOnClickListener(new View.OnClickListener()
@@ -135,7 +155,8 @@ public class TicketFragment extends Fragment
             public void onClick(View view)
             {
                 //TODO : Get Geolocation
-                zone.setText("Rue de la Chimie, 38400 Saint Martin d'Heres");
+                //zone.setText("Rue de la Chimie, 38400 Saint Martin d'Heres");
+                zones.setSelection(0);
                 setStartVisibility();
             }
         });
@@ -148,6 +169,17 @@ public class TicketFragment extends Fragment
                 if (!focused)
                 {
                     endTime.setText(getEndTime());
+
+                    try
+                    {
+                        int _duree = Integer.parseInt(duree.getText().toString());
+                        int _rappel = (int)(_duree / 2);
+                        rappel.setText(_rappel + "");
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                     setStartVisibility();
                 }
             }
@@ -172,14 +204,15 @@ public class TicketFragment extends Fragment
 
                 Calendar c = Calendar.getInstance(Locale.FRANCE);
                 SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD H:mm:ss", Locale.FRANCE);
-                CtrlTicket.addTicket(df.format(c.getTime()), "", vehicule, zone.getText().toString(), CtrlZone.getZoneById(1));
+                CtrlTicket.addTicket(df.format(c.getTime()), "", vehicule, zone.getNom(), CtrlZone.getZoneById(1));
                 CtrlTicket.getCurrent().setDuree(Integer.parseInt(duree.getText().toString()));
                 CtrlTicket.getCurrent().setRappel(Integer.parseInt(rappel.getText().toString()));
                 countDown.setStartTime(CtrlTicket.getCurrent().getDuree() * 60);
 
                 try
                 {
-                    countDown.addStepSeconde("rappel", CtrlTicket.getCurrent().getRappel() * 60);
+                    if(!rappel.getText().toString().equals("") && !rappel.getText().toString().equals("0"))
+                        countDown.addStepSeconde("rappel", CtrlTicket.getCurrent().getRappel() * 60);
                 }
                 catch (Exception e)
                 {
@@ -204,7 +237,7 @@ public class TicketFragment extends Fragment
 
     private void setStartVisibility()
     {
-        if(vehicule == null || duree.getText().toString().equals("") || zone.getText().toString().equals(""))
+        if(vehicule == null || duree.getText().toString().equals("") || zone == null)
             start.setEnabled(false);
         else
             start.setEnabled(true);
