@@ -100,7 +100,9 @@ public class CtrlTicket {
 		Calendar c = Calendar.getInstance(Locale.FRANCE);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss", Locale.FRANCE);
 		CtrlTicket.getCurrent().setDateFin(df.format(c.getTime()));
-		CtrlTicket.getCurrent().setDureePayanteMinute((dureeEffectiveSeconde * 60));
+		CtrlTicket.getCurrent().setDureePayanteMinute((dureeEffectiveSeconde / 60));
+
+		Ticket.getListeTickets().add(CtrlTicket.getCurrent());
 
 		// a la fin obligatoirement
 		CtrlTicket.getCurrent().setEtat(EtatTicket.TERMINE);

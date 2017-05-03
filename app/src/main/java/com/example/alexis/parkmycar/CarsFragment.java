@@ -79,6 +79,7 @@ public class CarsFragment extends Fragment
     }
 
     FloatingActionButton addBtn;
+    VehiculeListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,9 +89,10 @@ public class CarsFragment extends Fragment
 
 
         View view = inflater.inflate(R.layout.fragment_cars, container, false);
-        ListView vehiculeList = (ListView) view.findViewById(R.id.carsList);
-        VehiculeListAdapter adapter = new VehiculeListAdapter(getContext(), R.layout.cars_list_item, CtrlVoiture.getVoituresByUsager(utils.getUsager()));
+        final ListView vehiculeList = (ListView) view.findViewById(R.id.carsList);
+        adapter = new VehiculeListAdapter(getContext(), R.layout.cars_list_item, CtrlVoiture.getVoituresByUsager(utils.getUsager()));
         vehiculeList.setAdapter(adapter);
+
 
         addBtn = (FloatingActionButton) view.findViewById(R.id.addCarBtn);
 
@@ -149,6 +151,9 @@ public class CarsFragment extends Fragment
                                 immat.getText().toString(),
                                 id.getText().toString(),
                                 utils.getUsager().getMail());
+
+
+                        adapter.notifyDataSetChanged();
 
                         dialog.dismiss();
                     }

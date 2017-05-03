@@ -110,7 +110,7 @@ public class TicketFragment extends Fragment
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                vehicule = CtrlVoiture.getVoitures().get(i);
+                vehicule = CtrlVoiture.getVoituresByUsager(utils.getUsager()).get(i);
                 setStartVisibility();
             }
 

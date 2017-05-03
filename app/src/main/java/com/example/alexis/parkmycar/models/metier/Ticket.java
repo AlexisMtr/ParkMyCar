@@ -40,7 +40,9 @@ public class Ticket {
 		
 		listeTickets.add(this);
 		
-		CtrlVoiture.getVoitureByImmat(voiture).getListeTicketsVoiture().add(this);
+		Voiture v = CtrlVoiture.getVoitureByImmat(voiture);
+		if(v != null)
+			v.getListeTicketsVoiture().add(this);
 	}
 	
 	/**

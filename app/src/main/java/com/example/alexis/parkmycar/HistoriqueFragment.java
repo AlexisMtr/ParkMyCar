@@ -47,6 +47,7 @@ public class HistoriqueFragment extends Fragment
 
     View view;
     ListView tickets;
+    TicketListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,7 +63,8 @@ public class HistoriqueFragment extends Fragment
 
 
         tickets = (ListView) view.findViewById(R.id.ticketsListHisto);
-        tickets.setAdapter(new TicketListAdapter(getContext(), R.layout.tickets_list_item, all));
+        adapter = new TicketListAdapter(getContext(), R.layout.tickets_list_item, all);
+        tickets.setAdapter(adapter);
 
         return view;
     }
@@ -110,6 +112,9 @@ public class HistoriqueFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        if(adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     @Override

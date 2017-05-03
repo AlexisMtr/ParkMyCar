@@ -57,8 +57,8 @@ public class CtrlUsager {
 		return null;
 	}
 
-	public static void addUsager(String nom, String prenom, String tel, String mail, String mdp)
+	/*public static void addUsager(String nom, String prenom, String tel, String mail, String mdp)
 	{
 		CtrlUsager.getUsagers().add(new Usager(nom, prenom, tel, mail, mdp));
-	}
+	}*/
 }

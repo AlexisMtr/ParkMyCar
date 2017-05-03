@@ -1,6 +1,7 @@
 package com.example.alexis.parkmycar;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -59,6 +60,7 @@ public class ConnectionActivity extends AppCompatActivity
 
         alert = dial.create();
         alert.show();
+        //dial.show();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -71,6 +73,10 @@ public class ConnectionActivity extends AppCompatActivity
                         if(u.getMail().equals(emails.get(0)))
                         {
                             utils.setUsager(u);
+
+                            alert.dismiss();
+                            alert = null;
+                            dial = null;
 
                             Intent addIntent = new Intent(ConnectionActivity.this, HubActivity.class);
                             finish();
@@ -85,6 +91,7 @@ public class ConnectionActivity extends AppCompatActivity
                 dial = null;
             }
         }, 10000);
+
 
         logInBtn = (Button) findViewById(R.id.connexion);
         login = (EditText) findViewById(R.id.login);
@@ -153,5 +160,12 @@ public class ConnectionActivity extends AppCompatActivity
                 return false;
             }
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(alert != null)
+            alert.dismiss();
     }
 }
